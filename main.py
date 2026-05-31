@@ -395,14 +395,6 @@ def purge_anciens(user=Depends(require_admin)):
     r = db.produits.delete_many({"vitrine": {"$exists": False}})
     return {"message": "Anciens produits supprimés", "supprimes": r.deleted_count}
 
-# ─── PURGE temporaire par clé (À RETIRER APRÈS USAGE) ───
-@app.delete("/api/admin/purge-cle/{cle}")
-def purge_par_cle(cle: str):
-    if cle != "Sani2026Purge":
-        raise HTTPException(403, "Clé invalide")
-    r = db.produits.delete_many({"vitrine": {"$exists": False}})
-    return {"message": "Anciens produits supprimés", "supprimes": r.deleted_count}
-
 # ─── SEED (admin + catalogue de démo) ───────────────────
 @app.post("/api/seed")
 def seed_data():
