@@ -388,6 +388,13 @@ def admin_commandes(user=Depends(require_admin)):
     commandes = list(db.commandes.find({}).sort("date_commande", -1))
     return serialize(commandes)
 
+# ─── PURGE des anciens produits marketplace ────────────
+@app.delete("/api/admin/purge-anciens")
+def purge_anciens(user=Depends(require_admin)):
+    """Supprime uniquement les anciens produits (sans champ 'vitrine')."""
+    r = db.produits.delete_many({"vitrine": {"$exists": False}})
+    return {"message": "Anciens produits supprimés", "supprimes": r.deleted_count}
+
 # ─── SEED (admin + catalogue de démo) ───────────────────
 @app.post("/api/seed")
 def seed_data():
